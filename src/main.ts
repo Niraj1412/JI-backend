@@ -10,8 +10,14 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
+  const clientUrl = config.get<string>('CLIENT_URL') ?? '*';
+  const origins = clientUrl
+    .split(',')
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: config.get<string>('CLIENT_URL') ?? '*',
+    origin: origins.length ? origins : '*',
     credentials: true
   });
 
